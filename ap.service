@@ -1,0 +1,27 @@
+[Unit]
+Description=Static IP AND Route Table
+Wants=network.target
+Before=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStart=/sbin/ip link set dev wlan0 up
+ExecStart=/sbin/ip addr add 172.16.1.254/24 dev wlan0
+ExecStart=/sbin/ip link set dev eth0 up
+ExecStart=/sbin/ip addr add 10.10.147.9/24 dev eth0
+ExecStart=/sbin/route add -host 10.10.147.254 dev eth0
+ExecStart=/sbin/route add -net default gw 10.10.147.254
+
+ExecStart=/sbin/sysctl -p
+
+ExecStop=/sbin/ip addr flush dev wlan0
+ExecStop=/sbin/ip link set dev wlan0
+ExecStop=/sbin/ip add flush dev eth0
+ExecStop=/sbin/ip link set dev eth0
+ExecStop=/sbin/dhcpcd eth0
+
+[Install]
+WantedBy=multi-user.target
+

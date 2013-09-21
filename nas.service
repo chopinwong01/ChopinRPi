@@ -1,0 +1,14 @@
+[Unit]
+Description=Chopin NAS Service
+Wants=network.target
+Before=network.target
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/sbin/hdparm -S 240 /dev/sda
+ExecStart=/sbin/aria2c --conf-path=/home/chopin/aria2.conf
+
+[Install]
+WantedBy=multi-user.target
+
